@@ -533,26 +533,34 @@ class Response implements ResponseInterface
     {
         return $this->withStatus($status)->withHeader('Location', $url);
     }
-    
+
     /**
      * Json.
      *
      * Note: This method is not part of the PSR-7 standard.
      *
-     * This method prepares the response object to return an HTTP Json 
+     * This method prepares the response object to return an HTTP Json
      * response to the client.
+     *
+     * Default JSON encoding is performed with the following options, which
+     * produces RFC4627-compliant JSON, capable of embedding into HTML.
+     *
+     * - JSON_HEX_TAG
+     * - JSON_HEX_APOS
+     * - JSON_HEX_AMP
+     * - JSON_HEX_QUOT
      *
      * @param  mixed  $data   The data
      * @param  int    $status The HTTP status code.
      * @param  int    $encodingOptions Json encoding options
      * @return self
      */
-    public function withJson($data, $status = 200, $encodingOptions = 0)
-    {        
+    public function withJson($data, $status = 200, $encodingOptions = 15)
+    {
         $body = $this->getBody();
         $body->rewind();
         $body->write(json_encode($data,$encodingOptions));
-        
+
         return $this->withStatus($status)->withHeader('Content-Type','application/json;charset=utf-8');
     }
 
